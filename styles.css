@@ -3,6 +3,11 @@
         text-decoration: none;
         }
 
+ #main-content-box ul{
+padding: 4% 20% 0;
+
+ }
+
         li{
         display: inline-block;
         padding-right: 15px;
@@ -24,7 +29,7 @@
         #main-content-box {
         color: white;
         background-color: #2a2e2c;
-        width: 300px;
+        width: 400px;
         border: 10px solid #f0f5fc;
         border-radius: 8px;
             padding: 15px 50px 50px;
@@ -73,7 +78,7 @@
         .graph-box{
         color: white;
         background-color: #2a2e2c;
-        width: 300px;
+        width: 400px;
         border: 10px solid #f0f5fc;
         border-radius: 8px;
         padding: 50px;
@@ -88,13 +93,13 @@
   flex-wrap: wrap;
 }
 
-@media (min-width: 300px) {
+@media (min-width: 400px) {
   label {
     width: auto;
   }
 }
 
- @media (min-width: 300px) {
+ @media (min-width: 400px) {
      .item-content {
          order: 1;
      }
@@ -118,7 +123,7 @@
 
 .item-content {
     position: relative;
-    min-width: 300px;
+    min-width: 400px;
     max-width: 600px;
       padding: 20px;
       background: #fff;

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="47587fdf-754c-4d8e-979d-3a06f4c6f69b" name="Changes" comment="Removed recipe-detail-button divs and reliance on :has css.">
+    <list default="true" id="47587fdf-754c-4d8e-979d-3a06f4c6f69b" name="Changes" comment="Fixed CSS to allow recipe content to display below recipe navigation buttons.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
@@ -97,7 +97,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738216217641</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fixed CSS to allow recipe content to display below recipe navigation buttons.">
+      <option name="closed" value="true" />
+      <created>1738219303244</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1738219303244</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -106,7 +114,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Removed recipe-detail-button divs and reliance on :has css." />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed recipe-detail-button divs and reliance on :has css." />
+    <MESSAGE value="Fixed CSS to allow recipe content to display below recipe navigation buttons." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed CSS to allow recipe content to display below recipe navigation buttons." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PythonProject$main.coverage" NAME="main Coverage Results" MODIFIED="1738136024590" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
