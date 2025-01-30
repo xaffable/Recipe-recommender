@@ -14,7 +14,6 @@
     document.cookie.split("; ").map(cookie => cookie.split("=")));
                     const userUuid = cookies.UUID || null;
 
-
                     console.log(userUuid);
                     const url = "http://localhost:8000/api/v1/renew-cookie?UUID=" + userUuid;
                     const response = await fetch(url,{method: 'PUT'});
@@ -62,7 +61,7 @@ generateCookie();
 
 <input type="radio" id="ingredients" name="recipe-detail-buttons" checked>
     <label for="ingredients"><i class="fa-solid fa-carrot"></i><span> Ingredients</span></label>
-<div id="ingredients-content" class="item-content">
+        <div id="ingredients-content" class="item-content">
                 <p>Here are the recipe's ingredients.</p>
             </div>
 
