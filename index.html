@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/dfdad9127c.js" crossorigin="anonymous"></script>
+    <script>
+
+        async function generateCookie() {
+            if (document.cookie) {
+                try {
+                    //change URL prior to completion.
+                    //Generate UUID
+                    const cookies = Object.fromEntries(
+    document.cookie.split("; ").map(cookie => cookie.split("=")));
+                    const userUuid = cookies.UUID || null;
+
+
+                    console.log(userUuid);
+                    const url = "http://localhost:8000/api/v1/renew-cookie?UUID=" + userUuid;
+                    const response = await fetch(url,{method: 'PUT'});
+                    if (!response.ok) {
+                        throw new Error(`Response status: ${response.status}`);
+                    }
+                    const json = await response.json();
+                    document.cookie = `UUID=${userUuid}; expires=${json.Expiration}; path=/;`;
+                } catch (error) {
+                    console.error(error.message);
+                }
+            } else {
+
+                try {
+                    //change URL prior to completion.
+                    //Generate UUID
+                    const url = "http://localhost:8000/api/v1/generate-cookie";
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Response status: ${response.status}`);
+                    }
+                    const json = await response.json();
+                    document.cookie = `UUID=${json.UUID}; expires=${json.Expiration}; path=/;`;
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+        }
+generateCookie();
+    </script>
+    <meta charset="UTF-8">
+    <title>Recipe Recommender</title>
+</head>
+<body>
+<div id="header">
+<h2> Recipe Reccomender</h2>
+
+</div>
+
+<div id="main-content-box">
+    <h2 style="text-align: center; font-weight: bold;">Recipe Name</h2>
+    <img src="image_not_found.png" width="300px">
+    <h3 style="text-align:center;font-weight:bold;">Calories: x | Servings: x</h3>
+    <div id="recipe-nav">
+
+        <div class="recipe-detail-button">
+<input type="radio" id="ingredients" name="recipe-detail-buttons" checked>
+    <label for="ingredients" class="label"><i class="fa-solid fa-carrot"></i><span> Ingredients</span></label>
+<div id="ingredients-content" class="item-content">
+                <p>Here are the recipe's ingredients.</p>
+            </div>
+        </div>
+
+        <div class="recipe-detail-button">
+    <input type="radio" id="nutrition" name="recipe-detail-buttons">
+        <label for="nutrition" class="label"><i class="fa-solid fa-chart-bar"></i><span> Nutrition</span></label>
+        <div id="nutrition-content" class="item-content">
+                <p>Here are the recipe's nutrition facts.</p>
+            </div>
+        </div>
+
+        <div class="recipe-detail-button">
+        <input type="radio" id="steps" name="recipe-detail-buttons">
+        <label for="steps" class="label"><i class="fa-solid fa-book-open"></i><span> Steps</span></label>
+        <div id="steps-content" class="item-content">
+                <p>Here are the steps to make the recipe.</p>
+            </div>
+            </div>
+</div>
+    <ul>
+    <li><a class = "btn" href="#"><i class="fa-solid fa-heart" style="color: red"></i></a></li>
+    <li><a class = "btn" href="#"><i class="fa-solid fa-heart-crack" style="color: black"></i></a></li>
+    </ul>
+
+</div>
+
+<div id="graphs-container">
+    <h1>Graphs</h1>
+    <ul>
+    <li class="graph-box"></li>
+    <li class="graph-box"></li>
+    <li class="graph-box"></li>
+    </ul>
+    <p style ="padding-top:80px;">&copy; Zachary Gullett</p>
+</div>
+
+</body>
+</html>
