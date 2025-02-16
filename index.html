@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://kit.fontawesome.com/dfdad9127c.js" crossorigin="anonymous"></script>
     <script>
-
         async function generateCookie() {
             if (document.cookie) {
                 try {
@@ -14,7 +13,7 @@
     document.cookie.split("; ").map(cookie => cookie.split("=")));
                     const userUuid = cookies.UUID || null;
 
-                    console.log(userUuid);
+                    console.log("user UUID "+userUuid);
                     const url = "http://localhost:8000/api/v1/renew-cookie?UUID=" + userUuid;
                     const response = await fetch(url,{method: 'PUT'});
                     if (!response.ok) {
@@ -22,11 +21,12 @@
                     }
                     const json = await response.json();
                     document.cookie = `UUID=${userUuid}; expires=${json.Expiration}; path=/;`;
+                    await browseLikedRecipes(userUuid,1);
+                    await getRecommendedRecipe(userUuid);
                 } catch (error) {
                     console.error(error.message);
                 }
             } else {
-
                 try {
                     //change URL prior to completion.
                     //Generate UUID
@@ -37,12 +37,180 @@
                     }
                     const json = await response.json();
                     document.cookie = `UUID=${json.UUID}; expires=${json.Expiration}; path=/;`;
+                    await browseLikedRecipes(json.UUID,1);
+                    await getRecommendedRecipe(json.UUID);
                 } catch (error) {
                     console.error(error.message);
                 }
             }
         }
-generateCookie();
+
+        async function getRecipe(userUuid, recipeId) {
+    const url = "http://localhost:8000/api/v1/get-recipe?recipe_id=" + recipeId;
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+    const recipe = await response.json();
+
+    document.getElementById('recipe-name').innerHTML = recipe.name;
+    document.getElementById('calories').innerHTML = recipe.calories;
+    document.getElementById('servings').innerHTML = recipe.servings;
+    document.getElementById('fat').innerHTML = recipe.fat;
+    document.getElementById('saturated_fat').innerHTML = recipe.saturated_fat;
+    document.getElementById('cholesterol').innerHTML = recipe.cholesterol;
+    document.getElementById('sodium').innerHTML = recipe.sodium;
+    document.getElementById('carbs').innerHTML = recipe.carbs;
+    document.getElementById('fiber').innerHTML = recipe.fiber;
+    document.getElementById('sugar').innerHTML = recipe.sugar;
+    document.getElementById('protein').innerHTML = recipe.protein;
+
+console.log("recipe " + recipe)
+    //Check for images
+    if (recipe.image[0] !== undefined) {
+        document.getElementById('recipe-image').innerHTML = '<img src="' + recipe.image[0] + '" width="400px" height="400px">';
+    } else{
+        document.getElementById('recipe-image').innerHTML = '<img src="image_not_found.png" width="400px">';
+            }
+
+    //Generate ingredients list
+    const ingredientsArray = recipe.ingredients
+    const ingredientsList = document.getElementById("ingredients-list");
+    ingredientsList.innerHTML = "";
+    for (let i = 0; i < ingredientsArray.length; i++) {
+       ingredientsList.innerHTML += (i+1).toString() +'. ' + ingredientsArray[i] + '<br>';
+    }
+
+        //Generate steps list
+    const stepsArray = recipe.instructions
+    const stepsList = document.getElementById("steps-list");
+    stepsList.innerHTML = "";
+    for (let i = 0; i < stepsArray.length; i++) {
+       stepsList.innerHTML += (i+1).toString() +'. ' + stepsArray[i] + '<br /><br />';
+    }
+
+    document.getElementById("like-button").outerHTML = `<button class="btn" onclick="likeRecipe('${userUuid}', '${recipe.recipe_id}')" id="like-button"><i class="fa-solid fa-heart" style="color: red"></i></button>`;
+    document.getElementById("dislike-button").outerHTML = `<button class="btn" onclick="dislikeRecipe('${userUuid}', '${recipe.recipe_id}')" id="dislike-button"><i class="fa-solid fa-heart-crack" style="color: black"></i></button>`;
+    document.getElementById("recipe-list-button").checked = false;
+    }
+
+async function getRecommendedRecipe(userUuid) {
+    const url = "http://localhost:8000/api/v1/get-recommended-recipe?UUID=" + userUuid;
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+    const recipe = await response.json();
+
+    document.getElementById('recipe-name').innerHTML = recipe.name;
+    document.getElementById('calories').innerHTML = recipe.calories;
+    document.getElementById('servings').innerHTML = recipe.servings;
+    document.getElementById('fat').innerHTML = recipe.fat;
+    document.getElementById('saturated_fat').innerHTML = recipe.saturated_fat;
+    document.getElementById('cholesterol').innerHTML = recipe.cholesterol;
+    document.getElementById('sodium').innerHTML = recipe.sodium;
+    document.getElementById('carbs').innerHTML = recipe.carbs;
+    document.getElementById('fiber').innerHTML = recipe.fiber;
+    document.getElementById('sugar').innerHTML = recipe.sugar;
+    document.getElementById('protein').innerHTML = recipe.protein;
+
+console.log("recipe " + recipe)
+    //Check for images
+    if (recipe.image[0] !== undefined) {
+        document.getElementById('recipe-image').innerHTML = '<img src="' + recipe.image[0] + '" width="400px" height="400px">';
+    } else{
+        document.getElementById('recipe-image').innerHTML = '<img src="image_not_found.png" width="400px">';
+            }
+
+    //Generate ingredients list
+    const ingredientsArray = recipe.ingredients
+    const ingredientsList = document.getElementById("ingredients-list");
+    ingredientsList.innerHTML = "";
+    for (let i = 0; i < ingredientsArray.length; i++) {
+       ingredientsList.innerHTML += (i+1).toString() +'. ' + ingredientsArray[i] + '<br>';
+    }
+
+        //Generate steps list
+    const stepsArray = recipe.instructions
+    const stepsList = document.getElementById("steps-list");
+    stepsList.innerHTML = "";
+    for (let i = 0; i < stepsArray.length; i++) {
+       stepsList.innerHTML += (i+1).toString() +'. ' + stepsArray[i] + '<br /><br />';
+    }
+
+    document.getElementById("like-button").outerHTML = `<button class="btn" onclick="likeRecipe('${userUuid}', '${recipe.recipe_id}')" id="like-button"><i class="fa-solid fa-heart" style="color: red"></i></button>`;
+    document.getElementById("dislike-button").outerHTML = `<button class="btn" onclick="dislikeRecipe('${userUuid}', '${recipe.recipe_id}')" id="dislike-button"><i class="fa-solid fa-heart-crack" style="color: black"></i></button>`;
+        }
+
+
+
+        async function likeRecipe(userUuid,recipe_id) {
+    const url = "http://localhost:8000/api/v1/like-recipe?UUID=" + userUuid + "&recipe_id=" + recipe_id;
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    } else {
+        await browseLikedRecipes(userUuid,1);
+        await getRecommendedRecipe(userUuid);
+    }
+        }
+
+            async function dislikeRecipe(userUuid,recipe_id) {
+    const url = "http://localhost:8000/api/v1/dislike-recipe?UUID=" + userUuid + "&recipe_id=" + recipe_id;
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    } else {
+        await browseLikedRecipes(userUuid,1);
+        await getRecommendedRecipe(userUuid);
+    }
+        }
+
+        async function browseLikedRecipes(userUuid,page) {
+            const url = "http://localhost:8000/api/v1/get-liked-recipes?UUID=" + userUuid + "&page=" +page;
+            let response = await fetch(url);
+            let jsonResponse = await response.json();
+            const likedRecipesList = document.getElementById("liked-recipes-list")
+            const previousButton = document.getElementById("previous-liked-recipe")
+            const nextButton = document.getElementById("next-liked-recipe")
+        if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    } else {
+            likedRecipesList.innerHTML = ""
+            console.log(jsonResponse.length);
+        for (let i = 0; i < jsonResponse.length; i++) {
+            let recipeImage = jsonResponse[i].image[0]
+            if (recipeImage == null){
+                recipeImage = "image_not_found.png"
+            }
+            likedRecipesList.innerHTML += `<button class="recipe-result" onclick="getRecipe('${userUuid}','${jsonResponse[i].recipe_id}')"><img src="${recipeImage}" style="width:55px; height:55px;"><span style="padding-left: 20px;">${jsonResponse[i].name}</span></button>`;
+        }
+        let previousPage = page
+            if (page !== 1){
+             previousPage = page - 1
+            }
+        let nextPage = page + 1
+            console.log("Previous page is " + previousPage)
+            console.log("Next page is " + nextPage)
+
+            console.log(jsonResponse.length)
+        if (jsonResponse.length < 12){
+            nextButton.innerHTML = `<button class="search-nav-button" onclick="browseLikedRecipes('${userUuid}',${nextPage})" disabled>Next</button>`;
+        } else{
+            nextButton.innerHTML = `<button class="search-nav-button" onclick="browseLikedRecipes('${userUuid}',${nextPage})">Next</button>`;
+        }
+        previousButton.innerHTML = `<button class="search-nav-button" onclick="browseLikedRecipes('${userUuid}',${previousPage})">Previous</button>`;
+        if (jsonResponse.length === 0){
+            await getRecommendedRecipe(userUuid)
+        }
+
+    }
+
+        }
+
+
+        generateCookie();
+
     </script>
     <meta charset="UTF-8">
     <title>Recipe Recommender</title>
@@ -52,35 +220,69 @@ generateCookie();
 <h2> Recipe Reccomender</h2>
 
 </div>
-
-<div id="main-content-box">
-    <h2 style="text-align: center; font-weight: bold;">Recipe Name</h2>
-    <img src="image_not_found.png" width="400px">
-    <h3 style="text-align:center;font-weight:bold;">Calories: x | Servings: x</h3>
-    <div id="recipe-nav">
+<div style="margin: auto auto 50px">
+<div class="recipe-content-box">
+    <h2 style="text-align: center; font-weight: bold;" id="recipe-name">Recipe Name</h2>
+    <span id="recipe-image"></span>
+    <h3 style="text-align:center;font-weight:bold;">Calories: <span style="font-weight:normal;" id="calories">x</span> | Servings: <span style="font-weight:normal;" id="servings">x</span></h3>
+    <div class="recipe-nav">
 
 <input type="radio" id="ingredients" name="recipe-detail-buttons" checked>
     <label for="ingredients"><i class="fa-solid fa-carrot"></i><span> Ingredients</span></label>
         <div id="ingredients-content" class="item-content">
-                <p>Here are the recipe's ingredients.</p>
+                <p id="ingredients-list" style="font-size:20px;"></p>
             </div>
 
     <input type="radio" id="nutrition" name="recipe-detail-buttons">
         <label for="nutrition"><i class="fa-solid fa-chart-bar"></i><span> Nutrition</span></label>
         <div id="nutrition-content" class="item-content">
-                <p>Here are the recipe's nutrition facts.</p>
+            <p style="font-size:20px;"><span style="font-weight:bold;">Fat: </span><span id="fat"></span><br />
+                                    <span style="font-weight:bold;">Saturated Fat: </span><span id="saturated_fat"></span><br />
+                                    <span style="font-weight:bold;">Cholesterol: </span><span id="cholesterol"></span><br />
+                                    <span style="font-weight:bold;">Sodium: </span><span id="sodium"></span><br />
+                                    <span style="font-weight:bold;">Carbs: </span><span id="carbs"></span><br />
+                                    <span style="font-weight:bold;">Fiber: </span><span id="fiber"></span><br />
+                                    <span style="font-weight:bold;">Sugar: </span><span id="sugar"></span><br />
+                                    <span style="font-weight:bold;">Protein: </span><span id="protein"></span><br /></p>
             </div>
 
         <input type="radio" id="steps" name="recipe-detail-buttons">
         <label for="steps"><i class="fa-solid fa-book-open"></i><span> Steps</span></label>
         <div id="steps-content" class="item-content">
-                <p>Here are the steps to make the recipe.</p>
+                <p id="steps-list" style="font-size:20px;">
+                </p>
             </div>
 </div>
     <ul>
-    <li><a class = "btn" href="#"><i class="fa-solid fa-heart" style="color: red"></i></a></li>
-    <li><a class = "btn" href="#"><i class="fa-solid fa-heart-crack" style="color: black"></i></a></li>
+        <li><button class="btn" id="like-button"><i class="fa-solid fa-heart" style="color: red"></i></button></li>
+    <li><button class = "btn" id="dislike-button"><i class="fa-solid fa-heart-crack" style="color: black"></i></button></li>
     </ul>
+
+
+    <input type="checkbox" id="recipe-list-button" name="recipe-list-button">
+    <label for="recipe-list-button" class="recipe-list-button">Liked Recipes</label>
+    <div class="slide-up-box" >
+        <div id="liked-recipes-list">
+
+        </div>
+        <div id="liked-recipes-button-group">
+            <ul>
+            <li id="previous-liked-recipe">
+                <button class="search-nav-button">Previous</button>
+            </li>
+            <li  id="next-liked-recipe">
+                        <button class="search-nav-button">Next</button>
+            </li>
+        </ul>
+
+  <label for="recipe-list-button" class="close"><i class="fa-solid fa-circle-xmark"></i></label>
+        </div>
+
+    </div>
+
+
+
+</div>
 
 </div>
 
